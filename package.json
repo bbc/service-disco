@@ -16,6 +16,7 @@
     "express-eventsource": "0.0.3",
     "body-parser": "~1.4.3",
     "serve-static": "~1.2.3",
-    "ip": "^0.3.0"
+    "ip": "^0.3.0",
+    "express": "~4.4.4"
   }
 }
