@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src='lib/ractive.js'></script>
+    <script src='lib/lodash.min.js'></script>
+    <script src='lib/moment.min.js'></script>
+    <link rel="stylesheet" type="text/css" href="lib/pure.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/grids-responsive-min.css">
+    <style type="text/css">
+    .menu {
+      margin: 1em;
+    }
+    table {
+      width: 100%;
+    }
+
+    tr:hover td {
+      background-color #eee;
+    }
+
+    .sortable {
+      cursor: pointer;
+    }
+
+    .sorted {
+      background-color: #ccc;
+    }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="pure-g">
+    <div id="container" class="pure-u-5-5"></div>
+
+    <script id='template' type='text/ractive'>
+      <div class="menu">
+        <button class="pure-button pure-button-primary button-xsmall" 
+                on-click="scan">
+          Scan
+        </button>
+      </div>
+      
+      <table class="pure-table pure-table-horizontal">
+        <thead>
+          <tr>
+            <th class="sortable {{ sortColumn == 'state' ? 'sorted' : ''  }}" 
+                on-click="sort:state">State</th>
+            <th class="sortable {{ sortColumn == 'id' ? 'sorted' : ''     }}" 
+                on-click="sort:id">ID</th>
+            <th class="sortable {{ sortColumn == 'type' ? 'sorted' : ''   }}" 
+                on-click="sort:type">Type</th>
+            <th class="sortable {{ sortColumn == 'server' ? 'sorted' : '' }}" 
+                on-click="sort:server">Server</th>
+            <th class="sortable {{ sortColumn == 'lastMessage' ? 'sorted' : '' }}" 
+                on-click="sort:lastMessage">Last seen</th>
+            <th class="sortable {{ sortColumn == 'location' ? 'sorted' : '' }}" 
+                on-click="sort:location">Location</th>
+          </tr>
+        </thead>
+        {{# sort(services, sortColumn) }}
+          <tr class="{{state}}">
+            <td>{{ state }}</td>
+            <td>{{ id }}</td>
+            <td>{{ type }}</td>
+            <td>{{ server }}</td>
+            <td><time datetime={{ seen }}>{{ time(seen) }}</time></td>
+            <td><a href="{{ location }}">{{location}}</a></td>
+          </tr>
+        {{/services}}
+      </table>
+    </script>
+
+    <script type="text/javascript">
+
+      var ractive = new Ractive({
+        el: 'container',
+        template: '#template',
+        data: { 
+          services: [], 
+          sortColumn: 'state',
+          sort: function ( array, column ) {
+            array = array.slice(); // clone, so we don't modify the underlying data
+
+            return array.sort( function ( a, b ) {
+              return a[ column ] < b[ column ] ? -1 : 1;
+            });
+          },
+          time: function (date) {
+            return moment(date).format('HH:mm:ss');
+          },
+          ago: function (date) {
+            return moment(date).fromNow();
+          }
+        }
+      });
+
+      ractive.on( 'sort', function ( event, column ) {
+        this.set( 'sortColumn', column );
+      });
+
+      ractive.on('scan', function () {
+        var img = new Image();
+        var done = function () {
+          ractive.set('isScanning', false);
+        };
+        img.onload = done;
+        img.onerror = done;
+        img.src = '/scan';
+        ractive.set('isScanning', true);
+      });
+
+      var services = ractive.get('services');
+
+      var stream = new EventSource('/events');
+      stream.addEventListener('message', function (evt) {
+        var json = JSON.parse(evt.data);
+        console.log('message', json);
+
+        var id = json.info.USN,
+            type = json.info.NT || json.info.ST,
+            location = json.info.LOCATION,
+            server = json.info.SERVER,
+            lastMessage = json.lastMessage,
+            state = json.state;
+
+        var service = _.find(services, { id: id });
+
+        if (service) {
+          service.seen = lastMessage;
+          service.state = state;
+          ractive.update();
+        } else {
+          service = {
+            id: id,
+            type: type,
+            seen: lastMessage,
+            location: location,
+            server: server,
+            state: state
+          };
+
+          services.push(service);
+        }        
+      });
+    </script>
+  </body>
+</html>

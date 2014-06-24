@@ -1,0 +1,20 @@
+{
+  "name": "service-discovery-tool",
+  "version": "0.0.0",
+  "description": "This tool wraps multiple service discovery protocols.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "client": "node client.js",
+    "server": "node server.js"
+  },
+  "author": "",
+  "license": "Apache-2",
+  "dependencies": {
+    "node-ssdp": "~2.0.1",
+    "express-eventsource": "0.0.3",
+    "body-parser": "~1.4.3",
+    "serve-static": "~1.2.3"
+  }
+}
