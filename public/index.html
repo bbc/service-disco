@@ -86,6 +86,8 @@
                 on-click="sort:lastMessage">Last seen</th>
             <th class="sortable {{ sortColumn == 'location' ? 'sorted' : '' }}" 
                 on-click="sort:location">Location</th>
+            <th class="sortable {{ sortColumn == 'protocol' ? 'sorted' : '' }}" 
+                on-click="sort:protocol">Protocol</th>
           </tr>
         </thead>
         {{# sort(services, sortColumn) }}
@@ -94,8 +96,9 @@
             <td>{{ id }}</td>
             <td>{{ type }}</td>
             <td>{{ server }}</td>
-            <td><time datetime={{ seen }}>{{ time(seen) }}</time></td>
+            <td><time datetime={{ timestamp }}>{{ time(timestamp) }}</time></td>
             <td><a href="{{ location }}">{{location}}</a></td>
+            <td>{{ protocol }}</td>
           </tr>
         {{/services}}
       </table>
@@ -152,30 +155,23 @@
         var json = JSON.parse(evt.data);
         console.log('message', json);
 
-        var id = json.id,
-            type = json.type,
-            location = json.location,
-            server = json.server,
-            lastMessage = json.timestamp,
-            state = json.state;
-
-        var service = _.find(services, { id: id });
+        var service = _.find(services, { id: json.id });
 
         if (service) {
-          service.seen = lastMessage;
-          service.state = state;
+          service.seen = json.timestamp;
+          service.state = json.state;
+
+          if(json.location) {
+            service.location = json.location;
+          }
+
+          if(json.server) {
+            service.server = json.server;
+          }
+
           ractive.update();
         } else {
-          service = {
-            id: id,
-            type: type,
-            seen: lastMessage,
-            location: location,
-            server: server,
-            state: state
-          };
-
-          services.push(service);
+          services.push(json);
         }        
       });
     </script>

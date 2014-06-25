@@ -18,6 +18,7 @@ app.get('/scan', function (req, res) {
 
 var ssdp = client.create();
 ssdp.on('*', function (msg) {
+  console.log(msg);
   eventStream.send(msg);
 });
 ssdp.search();

@@ -13,7 +13,8 @@ module.exports.create = function (urn) {
       location: msg.LOCATION,
       server: msg.SERVER,
       timestamp: new Date(),
-      state: 'keepalive'
+      state: 'keepalive',
+      protocol: 'SSDP'
     };
     instance.emit('*', output);
   });
@@ -26,7 +27,8 @@ module.exports.create = function (urn) {
       location: msg.LOCATION,
       server: msg.SERVER,
       timestamp: new Date(),
-      state: 'byebye'
+      state: 'byebye',
+      protocol: 'SSDP'
     };
     instance.emit('*', output);
   });
@@ -39,7 +41,8 @@ module.exports.create = function (urn) {
           location: msg.LOCATION,
           server: msg.SERVER,
           timestamp: new Date(),
-          state: 'notify'
+          state: 'notify',
+          protocol: 'SSDP'
         };
       
     instance.emit('*', output);
