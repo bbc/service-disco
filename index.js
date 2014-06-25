@@ -1,6 +1,7 @@
 var express = require('express');
 var eventStream = require('express-eventsource')();
-var client = require('./client');
+var clientSSDP = require('./clients/ssdp');
+var clientMDNS = require('./clients/mdns');
 
 var app = express();
 
@@ -13,14 +14,21 @@ app.use('/events', eventStream.middleware());
 
 app.get('/scan', function (req, res) {
   ssdp.search();
+  mdns.start();
   res.send(200);
 });
 
-var ssdp = client.create();
+var ssdp = clientSSDP.create();
 ssdp.on('*', function (msg) {
   console.log(msg);
   eventStream.send(msg);
 });
 ssdp.search();
+
+var mdns = clientMDNS.create();
+mdns.on('*', function (msg) {
+  console.log(msg);
+  eventStream.send(msg);
+});
 
 app.listen(process.env.PORT || 3000);
