@@ -1,13 +1,16 @@
 var mdns = require('mdns'),
     EventEmitter = require('events').EventEmitter,
-    serviceType = mdns.makeServiceType({name: 'radiodan-http', protocol: 'tcp', subtypes: ['radiodanv1']});
+    serviceType = mdns.makeServiceType({name: 'http', protocol: 'tcp'});
 
 module.exports.create = function (urn) {
   var instance = new EventEmitter(),
-      browser = mdns.createBrowser(serviceType.toString()),
-      started = false;
+      urn      = urn ? urn : serviceType,
+      browser  = urn ? mdns.createBrowser(urn) : mdns.browseThemAll(),
+      started  = false;
 
   browser.on('serviceUp', function(msg) {
+    // console.log(msg);
+
     var output = {
       id: msg.fullname,
       type: msg.type.toString(),
@@ -18,11 +21,13 @@ module.exports.create = function (urn) {
       protocol: 'MDNS'
     };
 
-    instance.emit('*', output);
+    if(output.id) {
+      instance.emit('*', output);
+    }
   });
 
   browser.on('serviceDown', function(msg) {
-    console.log(msg);
+    // console.log(msg);
 
     var output = {
       id: msg.name + '.' + msg.type.toString() + msg.replyDomain,
@@ -34,7 +39,9 @@ module.exports.create = function (urn) {
       protocol: 'MDNS'
     };
 
-    instance.emit('*', output);
+    if(output.id) {
+      instance.emit('*', output);
+    }
   });
   
   instance.start = function () {
