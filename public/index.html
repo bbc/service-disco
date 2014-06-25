@@ -59,9 +59,8 @@
             Service <span>Disco</span>very
           </h1>
         </div>
-        <div class="menu pure-menu-horizontal panel pure-u-1-5">
-          <button class="pure-button pure-button-primary button-xsmall" 
-                  on-click="scan">
+        <div class="panel pure-u-1-5">
+          <button class="pure-button pure-button-primary button-xsmall" on-click="scan">
             Scan
           </button>
         </div>
@@ -130,7 +129,12 @@
         this.set( 'sortColumn', column );
       });
 
-      ractive.on('scan', function () {
+      // ractive.on('scan', scan);
+      document.querySelector('button')
+              .addEventListener('click', scan);
+
+      function scan () {
+        console.log('SCAN!');
         var img = new Image();
         var done = function () {
           ractive.set('isScanning', false);
@@ -139,7 +143,7 @@
         img.onerror = done;
         img.src = '/scan';
         ractive.set('isScanning', true);
-      });
+      };
 
       var services = ractive.get('services');
 
