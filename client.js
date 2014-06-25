@@ -6,32 +6,43 @@ module.exports.create = function (urn) {
       client = new Client({ /*logLevel: 'TRACE'*/ });
 
   client.on('advertise-alive', function (msg) {
-    console.log('GOOD DAY TO YOU');
-    console.log(arguments);
-    console.log('-----');
-    instance.emit('keepalive', msg);
-    instance.emit('*', 'keepalive', msg);
+    // console.log(arguments);
+    var output = {
+      id: msg.USN,
+      type: msg.NT,
+      location: msg.LOCATION,
+      server: msg.SERVER,
+      timestamp: new Date(),
+      state: 'keepalive'
+    };
+    instance.emit('*', output);
   });
 
   client.on('advertise-bye', function (msg) {
-    console.log('FARE THEE WELL');
-    console.log(arguments);
-    console.log('-----');
-    instance.emit('byebye', msg);
-    instance.emit('*', 'byebye', msg);
+    // console.log(arguments);
+    var output = {
+      id: msg.USN,
+      type: msg.NT,
+      location: msg.LOCATION,
+      server: msg.SERVER,
+      timestamp: new Date(),
+      state: 'byebye'
+    };
+    instance.emit('*', output);
   });
 
   client.on('response', function (headers, statusCode, rinfo) {
-    try {
-      console.log('Got a response to an m-search: ', statusCode);
-      console.log('Headers', headers);
-      console.log('rinfo', rinfo);
-      console.log('-------');
-    } catch(e) {
-      console.error(e);
-    }
-    instance.emit('notify', headers);
-    instance.emit('*', 'notify', headers);
+    var msg = headers,
+        output = {
+          id: msg.USN,
+          type: msg.NT,
+          location: msg.LOCATION,
+          server: msg.SERVER,
+          timestamp: new Date(),
+          state: 'notify'
+        };
+      
+    instance.emit('*', output);
   });
 
   // search for a service type

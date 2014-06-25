@@ -148,11 +148,11 @@
         var json = JSON.parse(evt.data);
         console.log('message', json);
 
-        var id = json.info.USN,
-            type = json.info.NT || json.info.ST,
-            location = json.info.LOCATION,
-            server = json.info.SERVER,
-            lastMessage = json.lastMessage,
+        var id = json.id,
+            type = json.type,
+            location = json.location,
+            server = json.server,
+            lastMessage = json.timestamp,
             state = json.state;
 
         var service = _.find(services, { id: id });

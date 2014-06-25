@@ -17,8 +17,8 @@ app.get('/scan', function (req, res) {
 });
 
 var ssdp = client.create();
-ssdp.on('*', function (state, msg) {
-  eventStream.send({ state: state, lastMessage: new Date(), info: msg });
+ssdp.on('*', function (msg) {
+  eventStream.send(msg);
 });
 ssdp.search();
 
