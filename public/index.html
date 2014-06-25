@@ -7,9 +7,10 @@
     <link rel="stylesheet" type="text/css" href="lib/pure.min.css">
     <link rel="stylesheet" type="text/css" href="lib/grids-responsive-min.css">
     <style type="text/css">
-    .menu {
-      margin: 1em;
+    * {
+      font-weight: 200;
     }
+
     table {
       width: 100%;
     }
@@ -25,19 +26,51 @@
     .sorted {
       background-color: #ccc;
     }
+
+    header {
+      padding: 1em;
+    }
+
+    h1 {
+      color: #666;
+    }
+
+    h1 > span {
+      color: #000;
+    }
+
+    .panel > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon {
+      height: 100%;
+    }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body class="pure-g">
+    <header class="pure-u-5-5">
+      <div class="pure-g">
+        <div class="panel pure-u-4-5">
+          <img class="icon" src="icon.svg" />
+          <h1>
+            Service <span>Disco</span>very
+          </h1>
+        </div>
+        <div class="menu pure-menu-horizontal panel pure-u-1-5">
+          <button class="pure-button pure-button-primary button-xsmall" 
+                  on-click="scan">
+            Scan
+          </button>
+        </div>
+      </div>
+    </header>
     <div id="container" class="pure-u-5-5"></div>
 
     <script id='template' type='text/ractive'>
-      <div class="menu">
-        <button class="pure-button pure-button-primary button-xsmall" 
-                on-click="scan">
-          Scan
-        </button>
-      </div>
+      
       
       <table class="pure-table pure-table-horizontal">
         <thead>
