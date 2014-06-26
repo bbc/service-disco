@@ -44,8 +44,23 @@
       vertical-align: middle;
     }
 
-    .icon {
-      height: 100%;
+    .buttons {
+      padding-left: 3em;
+    }
+
+    .dancer {
+      margin-left: -2em;
+      height: 8em;
+    }
+
+    .disco {
+      margin-top: -15em;
+      height: 5em;
+      transition: margin-top 0.3s ease-in-out;
+    }
+
+    .is-scanning .disco {
+      margin-top: -6em;
     }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,23 +69,22 @@
     <header class="pure-u-5-5">
       <div class="pure-g">
         <div class="panel pure-u-4-5">
-          <img class="icon" src="icon.svg" />
+          <img class="icon disco" src="disco.svg" />
+          <img class="icon dancer" src="icon.svg" />
           <h1>
             Service <span>Disco</span>very
           </h1>
-        </div>
-        <div class="panel pure-u-1-5">
-          <button class="pure-button pure-button-primary button-xsmall" on-click="scan">
-            Scan
-          </button>
+          <div class="buttons">
+            <button class="pure-button pure-button-primary button-xsmall" on-click="scan">
+              Scan
+            </button>
+          </div>
         </div>
       </div>
     </header>
     <div id="container" class="pure-u-5-5"></div>
 
     <script id='template' type='text/ractive'>
-      
-      
       <table class="pure-table pure-table-horizontal">
         <thead>
           <tr>
@@ -106,7 +120,7 @@
 
     <script type="text/javascript">
 
-      var ractive = new Ractive({
+      var table = new Ractive({
         el: 'container',
         template: '#template',
         data: { 
@@ -128,30 +142,40 @@
         }
       });
 
-      ractive.on( 'sort', function ( event, column ) {
-        this.set( 'sortColumn', column );
-      });
-
-      // ractive.on('scan', scan);
+      /*
+        Trigger a scan when button is pressed
+      */
       document.querySelector('button')
               .addEventListener('click', scan);
 
+      var isScanningId;
+
+      function isScanning() {
+        if (isScanningId) { return; }
+
+        document.querySelector('body')
+                .classList
+                .add('is-scanning');
+
+        isScanningId = window.setTimeout(function () {
+          document.querySelector('body')
+                  .classList.remove('is-scanning');
+          isScanningId = null;
+        }, 1000);
+      }
+
       function scan () {
-        console.log('SCAN!');
         var img = new Image();
-        var done = function () {
-          ractive.set('isScanning', false);
-        };
-        img.onload = done;
-        img.onerror = done;
         img.src = '/scan';
-        ractive.set('isScanning', true);
+        isScanning();
       };
 
-      var services = ractive.get('services');
+      var services = table.get('services');
 
       var stream = new EventSource('/events');
       stream.addEventListener('message', function (evt) {
+        isScanning();
+
         var json = JSON.parse(evt.data);
         console.log('message', json);
 
@@ -169,7 +193,7 @@
             service.server = json.server;
           }
 
-          ractive.update();
+          table.update();
         } else {
           services.push(json);
         }        
