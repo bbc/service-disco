@@ -1,68 +1,9 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src='lib/ractive.js'></script>
-    <script src='lib/lodash.min.js'></script>
-    <script src='lib/moment.min.js'></script>
+  <head>    
     <link rel="stylesheet" type="text/css" href="lib/pure.min.css">
     <link rel="stylesheet" type="text/css" href="lib/grids-responsive-min.css">
-    <style type="text/css">
-    * {
-      font-weight: 200;
-    }
-
-    table {
-      width: 100%;
-    }
-
-    tr:hover td {
-      background-color #eee;
-    }
-
-    .sortable {
-      cursor: pointer;
-    }
-
-    .sorted {
-      background-color: #ccc;
-    }
-
-    header {
-      padding: 1em;
-    }
-
-    h1 {
-      color: #666;
-    }
-
-    h1 > span {
-      color: #000;
-    }
-
-    .panel > * {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .buttons {
-      padding-left: 3em;
-    }
-
-    .dancer {
-      margin-left: -2em;
-      height: 8em;
-    }
-
-    .disco {
-      margin-top: -15em;
-      height: 5em;
-      transition: margin-top 0.3s ease-in-out;
-    }
-
-    .is-scanning .disco {
-      margin-top: -6em;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="app.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body class="pure-g">
@@ -118,86 +59,9 @@
       </table>
     </script>
 
-    <script type="text/javascript">
-
-      var table = new Ractive({
-        el: 'container',
-        template: '#template',
-        data: { 
-          services: [], 
-          sortColumn: 'state',
-          sort: function ( array, column ) {
-            array = array.slice(); // clone, so we don't modify the underlying data
-
-            return array.sort( function ( a, b ) {
-              return a[ column ] < b[ column ] ? -1 : 1;
-            });
-          },
-          time: function (date) {
-            return moment(date).format('HH:mm:ss');
-          },
-          ago: function (date) {
-            return moment(date).fromNow();
-          }
-        }
-      });
-
-      /*
-        Trigger a scan when button is pressed
-      */
-      document.querySelector('button')
-              .addEventListener('click', scan);
-
-      var isScanningId;
-
-      function isScanning() {
-        if (isScanningId) { return; }
-
-        document.querySelector('body')
-                .classList
-                .add('is-scanning');
-
-        isScanningId = window.setTimeout(function () {
-          document.querySelector('body')
-                  .classList.remove('is-scanning');
-          isScanningId = null;
-        }, 1000);
-      }
-
-      function scan () {
-        var img = new Image();
-        img.src = '/scan';
-        isScanning();
-      };
-
-      var services = table.get('services');
-
-      var stream = new EventSource('/events');
-      stream.addEventListener('message', function (evt) {
-        isScanning();
-
-        var json = JSON.parse(evt.data);
-        console.log('message', json);
-
-        var service = _.find(services, { id: json.id });
-
-        if (service) {
-          service.seen = json.timestamp;
-          service.state = json.state;
-
-          if(json.location) {
-            service.location = json.location;
-          }
-
-          if(json.server) {
-            service.server = json.server;
-          }
-
-          table.update();
-        } else {
-          services.push(json);
-        }        
-      });
-    </script>
+    <script src='lib/ractive.js'></script>
+    <script src='lib/lodash.min.js'></script>
+    <script src='lib/moment.min.js'></script>
+    <script src='app.js'></script>
   </body>
 </html>

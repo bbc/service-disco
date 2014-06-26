@@ -1,0 +1,55 @@
+* {
+  font-weight: 200;
+}
+
+table {
+  width: 100%;
+}
+
+tr:hover td {
+  background-color #eee;
+}
+
+.sortable {
+  cursor: pointer;
+}
+
+.sorted {
+  background-color: #ccc;
+}
+
+header {
+  padding: 1em;
+}
+
+h1 {
+  color: #666;
+}
+
+h1 > span {
+  color: #000;
+}
+
+.panel > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.buttons {
+  padding-left: 3em;
+}
+
+.dancer {
+  margin-left: -2em;
+  height: 8em;
+}
+
+.disco {
+  margin-top: -15em;
+  height: 5em;
+  transition: margin-top 0.3s ease-in-out;
+}
+
+.is-scanning .disco {
+  margin-top: -6em;
+}
