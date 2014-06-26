@@ -1,3 +1,9 @@
+/*
+  Construct an interactive sortable table
+  of services. 
+
+  Initially, the services list is empty. 
+*/
 var table = new Ractive({
   el: 'container',
   template: '#template',
@@ -28,6 +34,9 @@ document.querySelector('button')
 
 var isScanningId;
 
+/*
+  Show the scanning indicator for 1 sec.
+*/
 function isScanning() {
   if (isScanningId) { return; }
 
@@ -42,14 +51,28 @@ function isScanning() {
   }, 1000);
 }
 
+/*
+  Perform a scan using a lazy-man's Ajax
+*/
 function scan () {
   var img = new Image();
   img.src = '/scan';
   isScanning();
 };
 
+/*
+  Get the services array from the 
+  ractive object
+*/
 var services = table.get('services');
 
+/*
+  Construct a new event source to listen for service
+  announcements from the server.
+  
+  When a new message is received, add the messages
+  to the interactive table.
+*/
 var stream = new EventSource('/events');
 stream.addEventListener('message', function (evt) {
   isScanning();
