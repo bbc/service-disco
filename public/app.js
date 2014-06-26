@@ -27,6 +27,16 @@ var table = new Ractive({
 });
 
 /*
+  When table header is pressed, a sort event is
+  fired. Set the sortColumn value to the column
+  that was clicked. Ractive will then sort the
+  table for us.
+*/
+table.on( 'sort', function ( event, column ) {
+  this.set( 'sortColumn', column );
+});
+
+/*
   Trigger a scan when button is pressed
 */
 document.querySelector('button')
