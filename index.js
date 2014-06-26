@@ -20,15 +20,19 @@ app.get('/scan', function (req, res) {
 
 var ssdp = clientSSDP.create();
 ssdp.on('*', function (msg) {
-  // console.log(msg);
+  console.log(log(msg));
   eventStream.send(msg);
 });
 ssdp.search();
 
 var mdns = clientMDNS.create();
 mdns.on('*', function (msg) {
-  // console.log(msg);
+  console.log(log(msg));
   eventStream.send(msg);
 });
+
+function log(msg) {
+  return msg.protocol + ':\t\t' + msg.state + '\t' + msg.type + '\t\t\t' + msg.id;
+}
 
 app.listen(process.env.PORT || 3000);
