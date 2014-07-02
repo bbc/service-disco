@@ -32,6 +32,8 @@
           <tr>
             <th class="sortable {{ sortColumn == 'state' ? 'sorted' : ''  }}" 
                 on-click="sort:state">State</th>
+            <th class="sortable {{ sortColumn == 'protocol' ? 'sorted' : '' }}" 
+                on-click="sort:protocol">Protocol</th>
             <th class="sortable {{ sortColumn == 'id' ? 'sorted' : ''     }}" 
                 on-click="sort:id">ID</th>
             <th class="sortable {{ sortColumn == 'type' ? 'sorted' : ''   }}" 
@@ -42,21 +44,21 @@
                 on-click="sort:timestamp">Last seen</th>
             <th class="sortable {{ sortColumn == 'location' ? 'sorted' : '' }}" 
                 on-click="sort:location">Location</th>
-            <th class="sortable {{ sortColumn == 'protocol' ? 'sorted' : '' }}" 
-                on-click="sort:protocol">Protocol</th>
           </tr>
         </thead>
+        <tbody>
         {{# sort(services, sortColumn, sortDirection) }}
           <tr class="{{state}}">
             <td>{{ state }}</td>
-            <td>{{ id }}</td>
+            <td>{{ protocol }}</td>
+            <td class="restrict">{{ id }}</td>
             <td>{{ type }}</td>
             <td>{{ server }}</td>
             <td><time datetime={{ timestamp }}>{{ time(timestamp) }}</time></td>
             <td>{{location}}</td>
-            <td>{{ protocol }}</td>
           </tr>
         {{/services}}
+        </tbody>
       </table>
     </script>
 
