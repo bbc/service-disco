@@ -23,7 +23,7 @@ app.get('/scan', function (req, res) {
 
 // Return all previous messages
 app.get('/cache', function (req, res) {
-  res.send( JSON.stringify(messages) );
+  res.send( JSON.stringify(messages.slice(-50)) );
 });
 
 var ssdp = clientSSDP.create();
