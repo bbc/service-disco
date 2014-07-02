@@ -45,7 +45,7 @@
                 on-click="sort:protocol">Protocol</th>
           </tr>
         </thead>
-        {{# sort(services, sortColumn) }}
+        {{# sort(services, sortColumn, sortDirection) }}
           <tr class="{{state}}">
             <td>{{ state }}</td>
             <td>{{ id }}</td>

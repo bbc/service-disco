@@ -10,12 +10,15 @@ var table = new Ractive({
   data: { 
     services: [], 
     sortColumn: 'state',
-    sort: function ( array, column ) {
+    sortDirection: 'asc',
+    sort: function ( array, column, direction ) {
       array = array.slice(); // clone, so we don't modify the underlying data
+      
+      var sortFunc = (direction === 'asc')
+                      ? sortFuncForColumnAsc(column)
+                      : sortFuncForColumnDes(column);
 
-      return array.sort( function ( a, b ) {
-        return a[ column ] < b[ column ] ? -1 : 1;
-      });
+      return array.sort(sortFunc);
     },
     time: function (date) {
       return moment(date).format('HH:mm:ss');
@@ -26,6 +29,18 @@ var table = new Ractive({
   }
 });
 
+function sortFuncForColumnAsc(column) {
+  return function ( a, b ) {
+    return a[ column ] < b[ column ] ? -1 : 1;
+  }
+}
+
+function sortFuncForColumnDes(column) {
+  return function ( a, b ) {
+    return a[ column ] > b[ column ] ? -1 : 1;
+  }
+}
+
 /*
   When table header is pressed, a sort event is
   fired. Set the sortColumn value to the column
@@ -33,6 +48,18 @@ var table = new Ractive({
   table for us.
 */
 table.on( 'sort', function ( event, column ) {
+  var currentSortColumn    = this.get('sortColumn'),
+      currentSortDirection = this.get('sortDirection');
+
+  // If already sorted, flip direction
+  if (currentSortColumn === column) {
+    if (currentSortDirection === 'asc') {
+      this.set('sortDirection', 'des');
+    } else if (currentSortDirection === 'des') {
+      this.set('sortDirection', 'asc');
+    }
+  }
+
   this.set( 'sortColumn', column );
 });
 
