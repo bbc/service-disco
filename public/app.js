@@ -62,15 +62,6 @@ function isScanning() {
 }
 
 /*
-  Perform a scan using a lazy-man's Ajax
-*/
-function scan () {
-  var img = new Image();
-  img.src = '/scan';
-  isScanning();
-};
-
-/*
   Get the services array from the 
   ractive object
 */
@@ -109,3 +100,36 @@ stream.addEventListener('message', function (evt) {
     services.push(json);
   }        
 }); 
+
+/*
+  Perform a scan
+*/
+function scan() {
+  xhr('get', '/scan');
+  isScanning();  
+};
+
+/*
+  Initialise page from cached results
+*/
+function init() {
+  xhr('get', '/cache')
+    .then(parseJson)
+    .then(addMessagesToTable);
+  
+  isScanning();  
+}
+
+function parseJson(text) {
+  console.log('processXhr', arguments);
+  return JSON.parse(text);
+}
+
+function addMessagesToTable(messages) {
+  messages.forEach(function (msg) {
+    services.push(msg);
+  });
+}
+
+// Perform an initial scan
+init();

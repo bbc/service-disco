@@ -3,7 +3,8 @@ var eventStream = require('express-eventsource')();
 var clientSSDP = require('./clients/ssdp');
 var clientMDNS = require('./clients/mdns');
 
-var app = express();
+var app      = express(),
+    messages = [];
 
 // Serve all static files in /public
 app.use(require('serve-static')('public'));
@@ -12,16 +13,24 @@ app.use(require('serve-static')('public'));
 // To send data call: eventStream.send(dataObj, 'eventName');
 app.use('/events', eventStream.middleware());
 
+// Perform a scan, sending results 
+// through the event stream
 app.get('/scan', function (req, res) {
   ssdp.search();
   mdns.start();
-  res.send(200);
+  res.send();
+});
+
+// Return all previous messages
+app.get('/cache', function (req, res) {
+  res.send( JSON.stringify(messages) );
 });
 
 var ssdp = clientSSDP.create();
 ssdp.on('*', function (msg) {
   console.log(log(msg));
   eventStream.send(msg);
+  messages.push(msg);
 });
 ssdp.search();
 
@@ -29,6 +38,7 @@ var mdns = clientMDNS.create();
 mdns.on('*', function (msg) {
   console.log(log(msg));
   eventStream.send(msg);
+  messages.push(msg);
 });
 
 function log(msg) {
