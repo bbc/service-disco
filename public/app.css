@@ -53,3 +53,13 @@ h1 > span {
 .is-scanning .disco {
   margin-top: -6em;
 }
+
+.trans-col {
+  transition: color 1s ease-in-out;
+}
+
+.is-scanning .d { color: #F00; }
+.is-scanning .i { color: #0F0; }
+.is-scanning .s { color: #00F; }
+.is-scanning .c { color: #0FF; }
+.is-scanning .o { color: #F00; }

@@ -148,7 +148,6 @@ function init() {
 }
 
 function parseJson(text) {
-  console.log('processXhr', arguments);
   return JSON.parse(text);
 }
 

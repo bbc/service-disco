@@ -13,7 +13,8 @@
           <img class="icon disco" src="disco.svg" />
           <img class="icon dancer" src="icon.svg" />
           <h1>
-            Service <span>Disco</span>very
+            Service 
+            <span><span class="d trans-col">D</span><span class="i trans-col">i</span><span class="s trans-col">s</span><span class="c trans-col">c</span><span class="o trans-col">o</span></span>very
           </h1>
           <div class="buttons">
             <button class="pure-button pure-button-primary button-xsmall" on-click="scan">
@@ -26,7 +27,7 @@
     <div id="container" class="pure-u-5-5"></div>
 
     <script id='template' type='text/ractive'>
-      <table class="pure-table pure-table-horizontal">
+      <table class="pure-table pure-table-striped">
         <thead>
           <tr>
             <th class="sortable {{ sortColumn == 'state' ? 'sorted' : ''  }}" 
