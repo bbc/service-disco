@@ -18,6 +18,11 @@ tr:hover td {
   background-color: #ccc;
 }
 
+.hide-inactive .servicedown,
+.hide-inactive .byebye {
+  display: none;
+}
+
 header {
   padding: 1em;
 }
@@ -35,8 +40,21 @@ h1 > span {
   vertical-align: middle;
 }
 
+.filters {
+  margin: 1em;
+}
+
 .buttons {
   padding-left: 3em;
+}
+
+.pure-table td {
+  background-color: rgba(0, 255, 0, 0.1);
+}
+
+.servicedown td,
+.byebye td {
+  background-color: rgba(255, 0, 0, 0.1);
 }
 
 .dancer {

@@ -27,7 +27,13 @@
     <div id="container" class="pure-u-5-5"></div>
 
     <script id='template' type='text/ractive'>
-      <table class="pure-table pure-table-striped">
+      <div class="filters">
+        <label class="pure-checkbox">Show inactive services
+          <input type='checkbox' checked='{{showInactive}}'>
+        </label>
+      </div>
+
+      <table class="pure-table pure-table-horizontal {{ showInactive ? 'show-inactive' : 'hide-inactive' }}">
         <thead>
           <tr>
             <th class="sortable {{ sortColumn == 'state' ? 'sorted' : ''  }}" 

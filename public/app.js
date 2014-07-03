@@ -9,8 +9,9 @@ var table = new Ractive({
   template: '#template',
   data: { 
     services: [], 
-    sortColumn: 'state',
-    sortDirection: 'asc',
+    showInactive: true,
+    sortColumn: 'timestamp',
+    sortDirection: 'des',
     sort: function ( array, column, direction ) {
       array = array.slice(); // clone, so we don't modify the underlying data
       
