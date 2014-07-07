@@ -44,11 +44,18 @@ module.exports.create = function (service) {
   return instance;
 }
 
+function createGenericErrorHandler() {
+  return function (e) {
+    console.error(e.name, e.stack);
+  }
+}
+
 function createBrowserWithHandlers(service, instance) {
     var type = mdns.makeServiceType(service);
     var browser = mdns.createBrowser(type);
     browser.on('serviceUp', createServiceUpHandler(instance));
     browser.on('serviceDown', createServiceDownHandler(instance));
+    browser.on('error', createGenericErrorHandler());
     return browser;
 }
 
